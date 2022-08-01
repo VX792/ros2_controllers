@@ -255,6 +255,8 @@ protected:
 
   bool read_state_from_command_interfaces(JointTrajectoryPoint & state);
 
+  std::vector<std::time_t> update_call_date;
+
 private:
   bool contains_interface_type(
     const std::vector<std::string> & interface_type_list, const std::string & interface_type);

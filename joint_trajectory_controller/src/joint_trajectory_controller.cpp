@@ -22,6 +22,7 @@
 #include <ratio>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "angles/angles.h"
 #include "builtin_interfaces/msg/duration.hpp"
@@ -126,6 +127,8 @@ JointTrajectoryController::state_interface_configuration() const
 controller_interface::return_type JointTrajectoryController::update(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
+  update_call_date.push_back(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+  
   if (get_state().id() == lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
   {
     return controller_interface::return_type::OK;
@@ -864,6 +867,17 @@ controller_interface::CallbackReturn JointTrajectoryController::on_activate(
 controller_interface::CallbackReturn JointTrajectoryController::on_deactivate(
   const rclcpp_lifecycle::State &)
 {
+  if (!update_call_date.empty()) 
+  {
+    std::ofstream generated_csv("~/foo.csv");
+    for (auto& element : update_call_date) 
+    {
+      generated_csv << std::string{std::asctime (localtime(&element))};
+
+    }
+    generated_csv.close();
+  }
+  
   // TODO(anyone): How to halt when using effort commands?
   for (size_t index = 0; index < dof_; ++index)
   {
@@ -945,8 +959,9 @@ bool JointTrajectoryController::reset()
 controller_interface::CallbackReturn JointTrajectoryController::on_shutdown(
   const rclcpp_lifecycle::State &)
 {
+  
   // TODO(karsten1987): what to do?
-
+  
   return CallbackReturn::SUCCESS;
 }
 
