@@ -35,7 +35,7 @@ TEST(TestLoadJointStateController, load_controller)
     executor, "test_controller_manager");
 
   ASSERT_NO_THROW(cm.load_controller(
-    "test_joint_trajectory_controller", "joint_trajectory_controller/JointTrajectoryController"));
+    "test_joint_trajectory_controller", "joint_trajectory_controller/SleepyTrajectoryController"));
 
   rclcpp::shutdown();
 }

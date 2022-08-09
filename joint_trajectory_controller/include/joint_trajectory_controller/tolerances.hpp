@@ -91,7 +91,7 @@ struct SegmentTolerances
  * \param joint_names Names of joints to look for in the parameter server for a tolerance specification.
  * \return Trajectory segment tolerances.
  */
-SegmentTolerances get_segment_tolerances(
+inline SegmentTolerances get_segment_tolerances(
   const rclcpp_lifecycle::LifecycleNode & node, const std::vector<std::string> & joint_names)
 {
   const auto n_joints = joint_names.size();

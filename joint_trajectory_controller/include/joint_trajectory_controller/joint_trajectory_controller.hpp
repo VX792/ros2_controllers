@@ -255,7 +255,7 @@ protected:
 
   bool read_state_from_command_interfaces(JointTrajectoryPoint & state);
 
-  std::vector<std::time_t> update_call_date;
+  std::vector<std::pair<std::time_t, std::chrono::milliseconds>> update_call_date;
 
 private:
   bool contains_interface_type(

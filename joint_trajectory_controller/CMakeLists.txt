@@ -30,6 +30,7 @@ foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
 endforeach()
 
 add_library(${PROJECT_NAME} SHARED
+  src/sleepy_joint_trajectory_controller.cpp
   src/joint_trajectory_controller.cpp
   src/trajectory.cpp
 )

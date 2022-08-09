@@ -127,7 +127,22 @@ JointTrajectoryController::state_interface_configuration() const
 controller_interface::return_type JointTrajectoryController::update(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
-  update_call_date.push_back(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+  auto now = std::chrono::system_clock::now();
+  update_call_date.push_back(std::make_pair(std::chrono::system_clock::to_time_t(now)
+                                          , std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000));
+
+  if (update_call_date.size() == 300) 
+  {
+    std::ofstream generated_csv;
+    generated_csv.open("/home/vx792/foo.csv");
+    generated_csv << "normal JTC\n";
+    for (auto& element : update_call_date) 
+    {
+      generated_csv << std::put_time(localtime(&element.first), "%H:%M:%S") << '.' << std::setfill('0') << std::setw(3) << element.second.count() << ",\n";
+    }
+    generated_csv.close();
+    //exit(1);
+  }
   
   if (get_state().id() == lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
   {
@@ -867,17 +882,7 @@ controller_interface::CallbackReturn JointTrajectoryController::on_activate(
 controller_interface::CallbackReturn JointTrajectoryController::on_deactivate(
   const rclcpp_lifecycle::State &)
 {
-  if (!update_call_date.empty()) 
-  {
-    std::ofstream generated_csv("~/foo.csv");
-    for (auto& element : update_call_date) 
-    {
-      generated_csv << std::string{std::asctime (localtime(&element))};
 
-    }
-    generated_csv.close();
-  }
-  
   // TODO(anyone): How to halt when using effort commands?
   for (size_t index = 0; index < dof_; ++index)
   {
