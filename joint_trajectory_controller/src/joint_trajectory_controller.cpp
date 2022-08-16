@@ -131,16 +131,16 @@ controller_interface::return_type JointTrajectoryController::update(
   update_call_date.push_back(std::make_pair(std::chrono::system_clock::to_time_t(now)
                                           , std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000));
 
-  if (update_call_date.size() == 300) 
+  if (update_call_date.size() == 10000) 
   {
-    std::ofstream generated_csv;
-    generated_csv.open("/home/vx792/foo.csv");
-    generated_csv << "normal JTC\n";
+    std::ofstream generated_csv_jtc;
+    generated_csv_jtc.open("/tmp/" + std::string(file_prefix) + std::to_string(update_call_date.back().first) + std::to_string(update_call_date.back().second.count()) + ".csv");
+    generated_csv_jtc << "update timestamps\n";
     for (auto& element : update_call_date) 
     {
-      generated_csv << std::put_time(localtime(&element.first), "%H:%M:%S") << '.' << std::setfill('0') << std::setw(3) << element.second.count() << ",\n";
+      generated_csv_jtc << std::put_time(localtime(&element.first), "%H:%M:%S") << ',' << std::setfill('0') << std::setw(3) << element.second.count() << "\n";
     }
-    generated_csv.close();
+    generated_csv_jtc.close();
     //exit(1);
   }
   

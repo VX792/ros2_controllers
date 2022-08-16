@@ -58,6 +58,8 @@ class SleepyTrajectoryController : public JointTrajectoryController {
 
    controller_interface::return_type update(
    const rclcpp::Time & time, const rclcpp::Duration & period) override;
+
+   int sleep_base = 10;
 	
  };
 } //namespace joint_trajectory_controller
